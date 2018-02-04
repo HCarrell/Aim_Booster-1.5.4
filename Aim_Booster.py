@@ -33,7 +33,9 @@ canvas.grid(row=0, column=1, rowspan=3)
 r = radius_intvar.get()
 circle_item = canvas.create_oval(x-r, y-r, x+r, y+r, 
                                  outline='#FFFFFF', fill='#FFFFFF')
-                                 
+global score_list
+score_list =[]
+high_score_list = []                           
 def start(event):
     canvas.itemconfig(circle_item, outline='#000000', fill='#00FFFF')
     global interrupt
@@ -49,8 +51,17 @@ def start(event):
             # call countdown again after 10ms 
             root.after(1, countdown, count-1)
         if interrupt == 1:
-            score = 100 - score
-            editor.insert(tk.END, score)
+            new_score = 100 - score
+            editor.insert(tk.END, new_score)
+            editor.see(tk.END)
+            score_list.append(new_score)
+            for score in score_list:
+                if new_score < score:
+                    high_score_list.append(new_score)
+                    for high_score in high_score_list:
+                        if new_score < high_score:
+                            highest.insert(tk.END, new_score)
+                            highest.see(tk.END)     
     countdown(100)
 
 def interruption():
@@ -85,9 +96,10 @@ def shoot(event):
         interruption()
         position_changed()
         
-        
+highest = tk.Text(root, height = 1, width=2)
+highest.grid(column=3,row=0,rowspan=1)
 editor = tk.Text(root, width=2)
-editor.grid(column=3, row=0, rowspan=5)
+editor.grid(column=3, row=1, rowspan=5)
      
 label = tk.Label(root)
 label.grid(row=2, column=0)
